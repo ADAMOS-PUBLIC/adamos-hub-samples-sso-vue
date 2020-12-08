@@ -40,8 +40,12 @@
       </q-list>
     </q-drawer> -->
 
-    <q-page-container>
+    <q-page-container class="bg-grey-2">
       <router-view v-if="user" />
+      
+      <div v-else class="fixed-center">
+        <q-spinner size="xl" />
+      </div>
     </q-page-container>
   </q-layout>
 </template>
