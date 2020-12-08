@@ -34,8 +34,7 @@ export default async ({ app, router, Vue }) => {
     }
 
     await auth0.loginWithRedirect({
-        redirect_uri: 'http://127.0.0.1:8080'
-        // redirect_uri: window.location.origin
+        redirect_uri: window.location.origin
     });
 }
 
