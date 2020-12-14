@@ -8,8 +8,6 @@ export default async ({ app, router, Vue }) => {
     let auth0 = await createAuth0Client({
         domain: 'id.adamos.dev',
         client_id: 'BHpa1DmT72cINvbqwxOGAhs1NnLW6vMx',
-        // client_id: 'lFsB5cfRyWAIbS5u1xmijDmSFGxVF13L',
-        // audience: 'https://partner-pipe.adamos.com',
     });
 
     const isAuthenticated = await auth0.isAuthenticated();
