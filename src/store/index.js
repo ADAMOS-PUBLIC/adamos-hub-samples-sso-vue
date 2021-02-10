@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 
 import mdm from './mdm'
 import permission from './permission'
+import catalog from './catalog'
+import runstate from './runstate'
 
 Vue.use(Vuex)
 
@@ -20,6 +22,8 @@ export default function (/* { ssrContext } */) {
     modules: {
       mdm,
       permission,
+      catalog,
+      runstate,
     },
 
     // enable strict mode (adds overhead!)

@@ -1,5 +1,7 @@
 export default function () {
   return {
-    equipments: []
+    loadingStatus: 'not_loading',
+    equipments: [],
+    manufacturers: [],
   }
 }
