@@ -20,11 +20,10 @@
 
     <div class="text-h6 q-mt-xl">Machine Master Data (L2 Integration)</div>
     <!-- <div class="text-h6 q-mt-xl">Your Machines</div> -->
-    <div class="row q-gutter-md">
-      <div v-if="!equipments.length">
-        <div class="">No machines found</div>
-      </div>
-
+    <div v-if="!equipments.length">
+      <div class="">No machines found</div>
+    </div>
+    <div v-else class="row q-gutter-md">
       <q-card
         v-for="equip in equipments"
         :key="equip.uuid"
@@ -49,20 +48,29 @@
             <q-item-label caption>Serial Number: {{ equip.manufacturerIdentification.serialNumber }}</q-item-label>
           </q-item-section>
         </q-item>
-        <!-- <q-card-section>
-          <div class="text-h6">{{ equip.manufacturerIdentification.name }}</div>
-        </q-card-section> -->
       </q-card>
     </div>
 
     <div class="text-h6 q-mt-xl">Runstate Data (L3 Integration)</div>
-    <div style="max-width: 80em">
+    <div v-if="!equipments.length">
+      <div class="">No machines found</div>
+    </div>
+    <div v-else style="max-width: 80em">
       <q-table
         title="Runstates"
-        :data="data"
+        :data="runstateData"
         :columns="columns"
+        :pagination="pagination"
         row-key="name"
-      />
+      >
+        <template v-slot:body-cell="props">
+          <q-td :props="props">
+            <q-avatar v-if="props.col.name === 'stacklight_color'" :color="props.value.toLowerCase()" style="border: 1px solid black" size="sm">
+            </q-avatar>
+            <div v-else>{{ props.value }}</div>
+          </q-td>
+        </template>
+      </q-table>
     </div>
   </q-page>
 </template>
@@ -82,7 +90,8 @@ export default {
 
   computed: {
     equipments () {
-      return this.$store.state.mdm.equipments
+      let clone = [...this.$store.state.mdm.equipments]
+      return clone.sort((a, b) => this.stringSort(a.manufacturerIdentification.name, b.manufacturerIdentification.name))
     },
     manufacturers () {
       return this.$store.state.mdm.manufacturers
@@ -93,6 +102,18 @@ export default {
     runstates () {
       return this.$store.state.runstate.runstates
     },
+    runstateData () {
+      return this.equipments.map((equip, index) => {
+        let i = index < this.states.length ? index : Math.round(Math.random()*this.states.length)
+        let obj = {
+          name: equip.manufacturerIdentification.name,
+          state: this.states[i],
+          stacklight_color: this.stacklight_colors[i]
+        }
+
+        return obj
+      })
+    }
   },
 
   data () {
@@ -110,7 +131,16 @@ export default {
         { name: 'name', label: 'Machine Name', field: 'name', align: 'left', sortable: true },
         { name: 'state', label: 'State', field: 'state', align: 'left', sortable: true },
         { name: 'stacklight_color', label: 'Stacklight Color', field: 'stacklight_color', align: 'left', sortable: true },
-      ]
+      ],
+      pagination: {
+        // sortBy: 'desc',
+        // descending: false,
+        // page: 2,
+        rowsPerPage: 10
+        // rowsNumber: xx if getting data from a server
+      },
+      states: ['PRODUCTIVE', 'STANDBY', 'ENGINEERING', 'SCHEDULED DOWNTIME', 'UNSCHEDULED DOWNTIME'],
+      stacklight_colors: ['GREEN', 'YELLOW', 'WHITE', 'BLUE', 'RED'],
     }
   },
 
@@ -129,6 +159,19 @@ export default {
       if (!images.length) return 'machines-emptystate.svg'
       return images[0].fileInformation.url
     },
+    stringSort (a, b) {
+      var nameA = a.toUpperCase(); // ignore upper and lowercase
+      var nameB = b.toUpperCase(); // ignore upper and lowercase
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      // names must be equal
+      return 0;
+    }
   }
 }
 </script>
