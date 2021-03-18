@@ -39,7 +39,7 @@
 
 <script>
 export default {
-  name: 'PageIndex',
+  // name: 'PageIndex',
 
   components: {
     MachineCard: () => import('components/MachineCard'),
@@ -47,13 +47,15 @@ export default {
   },
 
   async mounted () {
-    // await Promise.all([
-      //   this.$store.dispatch('mdm/fetchManufacturers'),
-    //   this.$store.dispatch('catalog/fetchImageItems')
-    // ])
     this.$store.dispatch('mdm/fetchManufacturers')
     this.$store.dispatch('catalog/fetchImageItems')
+
     let eqs = await this.$store.dispatch('mdm/fetchEquipments')
+    if (eqs.error) {
+      console.error(eqs.error);
+      return
+    }
+
     let ids = eqs.map(eq => eq.uuid)
     this.$store.dispatch('runstate/fetchRunstates', ids)
     // this.$store.dispatch('permission/fetchTenants')
@@ -63,7 +65,6 @@ export default {
     equipments () {
       let clone = [...this.$store.state.mdm.equipments].map(this.mapMachine)
       return clone.sort((a, b) => this.stringSort(a.manufacturerName, b.manufacturerName))
-      // return clone.sort((a, b) => this.stringSort(a.manufacturerIdentification.name, b.manufacturerIdentification.name))
     },
     manufacturers () {
       return this.$store.state.mdm.manufacturers

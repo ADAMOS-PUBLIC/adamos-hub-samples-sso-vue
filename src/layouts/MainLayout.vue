@@ -23,18 +23,17 @@
         <q-space />
 
         <div class="row items-center q-gutter-md">
-          <!-- <div class="saria-font text-black">{{ name }}</div> -->
           <div class="cursor-pointer">
-            <!-- <q-avatar><img :src="picture"></q-avatar> -->
-            <q-icon name="account_circle" size="md" />
+            <q-avatar v-if="picture" size="md"><img :src="picture"></q-avatar>
+            <q-icon v-else name="account_circle" size="md" />
           </div>
           
           <q-menu>
             <q-list class="saria-font" style="min-width: 11em">
               <q-item>
                 <q-item-section avatar>
-                  <!-- <q-avatar size="xl"><img :src="picture"></q-avatar> -->
-                  <q-icon name="account_circle" color="black" size="md" />
+                  <q-avatar v-if="picture"><img :src="picture"></q-avatar>
+                  <q-icon v-else name="account_circle" color="black" size="md" />
                 </q-item-section>
                 <q-item-section>
                   <q-item-label class="">{{ name }}</q-item-label>
@@ -54,27 +53,6 @@
       </q-toolbar>
       <q-separator color="primary" />
     </q-header>
-
-    <!-- <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-1"
-    >
-      <q-list>
-        <q-item-label
-          header
-          class="text-grey-8"
-        >
-          Essential Links
-        </q-item-label>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer> -->
 
     <q-page-container class="bg-grey-2">
       <router-view v-if="user" />
@@ -101,6 +79,9 @@ export default {
     email () {
       return this.$user ? this.$user.email : 'noemail'
     },
+    picture () {
+      return this.$user ? this.$user.picture : null
+    },
   },
   data () {
     return {
@@ -110,7 +91,7 @@ export default {
 
   methods: {
     logout () {
-      this.$auth.logout({returnTo: window.location.origin})
+      this.$auth.signoutRedirect()
     },
   }
 }

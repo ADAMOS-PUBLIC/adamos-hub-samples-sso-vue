@@ -6,13 +6,15 @@
   "author": "Pavel Nikolov <pavel.nikolov@adamos.com>",
   "private": true,
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
+    "start": "quasar dev",
+    "test": "echo \"No test specified\" && exit 0",
+    "bnd": "quasar build && ./deploy.sh"
   },
   "dependencies": {
-    "@auth0/auth0-spa-js": "1.13.6",
     "@quasar/extras": "^1.0.0",
-    "axios": "^0.18.1",
+    "axios": "0.21.1",
     "core-js": "^3.6.5",
+    "oidc-client": "1.11.5",
     "quasar": "^1.0.0"
   },
   "devDependencies": {
