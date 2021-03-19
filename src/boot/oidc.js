@@ -62,5 +62,6 @@ function setAuthHeader(token) {
 async function getMetadata() {
   let response = await fetch(`${config.authority}/.well-known/openid-configuration`)
   let metadata = await response.json()
-  metadata.end_session_endpoint = `${config.authority}/logout?returnTo=${config.redirect_uri}&client_id=${config.client_id}`
+  metadata.end_session_endpoint = `${config.authority}/logout?returnTo=${window.location.origin}&client_id=${config.client_id}`
+  return metadata
 }
