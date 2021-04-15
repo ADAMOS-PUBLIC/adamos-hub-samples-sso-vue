@@ -21,9 +21,10 @@ export default async ({ app, router, Vue }) => {
   config.metadata = await getMetadata()
 
   const mgr = new Oidc.UserManager(config)
+  
 
   let user = await mgr.getUser()
-  if (user) {
+  if (user && !user.expired) {
     await afterLogin(mgr, Vue)
     return
   }
