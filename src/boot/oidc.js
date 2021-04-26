@@ -12,7 +12,7 @@ const config = {
   client_id: `CjhZ5fGMMNaBf8o95eJetIQr7LSv82mK`,
   redirect_uri: window.location.origin,
   response_type: 'code',
-  scope: `openid profile email`,
+  scope: `openid profile email offline_access`,
   post_logout_redirect_uri: window.location.origin,
 }
 
