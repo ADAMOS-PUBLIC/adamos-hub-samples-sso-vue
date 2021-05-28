@@ -23,11 +23,11 @@ export default async ({ app, router, Vue }) => {
   const mgr = new Oidc.UserManager(config)
   
 
-  let user = await mgr.getUser()
-  if (user && !user.expired) {
-    await afterLogin(mgr, Vue)
-    return
-  }
+  // let user = await mgr.getUser()
+  // if (user && !user.expired) {
+  //   await afterLogin(mgr, Vue)
+  //   return
+  // }
 
   const query = window.location.search;
   if (query.includes("code=") && query.includes("state=")) {
