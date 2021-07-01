@@ -5,7 +5,7 @@
     </div>
 
     <div class="text-h6 q-mt-xl">Single-Sign-On (L1 Integration)</div>
-    <q-card>
+    <q-card class="q-mb-md">
       <q-card-section>
         <div class="row q-gutter-xl">
           <template v-for="(field, index) in user_fields">
@@ -18,6 +18,10 @@
         </div>
       </q-card-section>
     </q-card>
+    <div class="row q-gutter-md">
+      <q-btn label="Access Token" color="primary" @click="copyToken('access_token')" />
+      <q-btn label="ID Token" color="primary" @click="copyToken('id_token')" />
+    </div>
 
     <div class="text-h6 q-mt-xl">Machine Master Data (L2 Integration)</div>
     <div v-if="!equipments.length">
@@ -38,6 +42,8 @@
 </template>
 
 <script>
+import clipboard from '../mixins/clipboard'
+
 export default {
   // name: 'PageIndex',
 
@@ -45,6 +51,8 @@ export default {
     MachineCard: () => import('components/MachineCard'),
     RunstateTable: () => import('components/RunstateTable'),
   },
+
+  mixins: [clipboard],
 
   async mounted () {
     this.$store.dispatch('mdm/fetchManufacturers')
@@ -58,6 +66,7 @@ export default {
 
     let ids = eqs.map(eq => eq.uuid)
     this.$store.dispatch('runstate/fetchRunstates', ids)
+    this.$store.dispatch('runstate/fetchStacklights', ids)
     // this.$store.dispatch('permission/fetchTenants')
   },
 
@@ -75,16 +84,21 @@ export default {
     runstates () {
       return this.$store.state.runstate.runstates
     },
+    stacklights () {
+      return this.$store.state.runstate.stacklights
+    },
     runstateData () {
       return this.equipments.map((equip, index) => {
-        let i = index < this.states.length ? index : Math.round(Math.random()*this.states.length)
-        let obj = {
-          name: equip.manufacturerIdentification.name,
-          state: this.states[i],
-          stacklight_color: this.stacklight_colors[i]
-        }
+        // let i = index < this.states.length ? index : Math.round(Math.random()*this.states.length)
+        let state = this.runstates.filter(state => state.assetUuid === equip.uuid).pop()
+        let stacklight = this.stacklights.filter(light => light.assetUuid === equip.uuid).pop()
 
-        return obj
+        return {
+          name: equip.manufacturerIdentification.name,
+          state: this.mapState(state),
+          condition: this.mapCondition(state),
+          stacklight_color: this.mapStacklight(stacklight)
+        }
       })
     }
   },
@@ -99,8 +113,9 @@ export default {
         {label: 'Your Email', field: 'email'},
         {label: 'App ID', field: 'https://id.adamos.com/applicationId'},
       ],
-      states: ['PRODUCTIVE', 'STANDBY', 'ENGINEERING', 'SCHEDULED DOWNTIME', 'UNSCHEDULED DOWNTIME'],
-      stacklight_colors: ['GREEN', 'YELLOW', 'WHITE', 'BLUE', 'RED'],
+      // conditions: ['PRODUCTIVE', 'STANDBY', 'ENGINEERING', 'SCHEDULED DOWNTIME', 'UNSCHEDULED DOWNTIME'],
+      // stacklight_colors: ['GREEN', 'YELLOW', 'WHITE', 'BLUE', 'RED'],
+      // states: ['foo', 'bar', 'test', 'abc', 'def'],
     }
   },
 
@@ -138,7 +153,23 @@ export default {
 
       // names must be equal
       return 0;
-    }
+    },
+    mapState (state) {
+      return state ? state.machineState : null
+    },
+    mapCondition (state) {
+      return state ? state.machineCondition : null
+    },
+    mapStacklight (state) {
+      return state ? state.stackLightColor : null
+    },
+    async copyToken (field) {
+      let user = await this.$auth.getUser()
+      this.copyTextToClipboard(user[field])
+      this.$q.notify({
+        message: `${field} copied to clipboard!`
+      })
+    },
   }
 }
 </script>

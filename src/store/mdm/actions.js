@@ -25,14 +25,3 @@ export async function fetchManufacturers (context) {
         return {error, success: false}
     }
 }
-export async function fetchManufacturerById (context, id) {
-    context.commit('SET_LOADING_STATUS', 'loading')
-    try {
-        let res = await axios.get(`${BASE_URL}/manufacturers/${id}`)
-        context.commit('SET_MANUFACTURERS', res.data.content)
-        context.commit('SET_LOADING_STATUS', 'not_loading')
-    } catch (error) {
-        console.log(error)
-        return {error, success: false}
-    }
-}

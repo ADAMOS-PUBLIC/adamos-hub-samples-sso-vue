@@ -8,9 +8,9 @@
   >
     <template v-slot:body-cell="props">
       <q-td :props="props">
-        <q-avatar v-if="props.col.name === 'stacklight_color'" :color="getColor(props.value)" style="border: 1px solid black" size="sm">
+        <q-avatar v-if="props.col.name === 'stacklight_color'" :color="getColor(props.value)" size="sm">
         </q-avatar>
-        <div v-else>{{ props.value }}</div>
+        <div v-else>{{ props.value || "?" }}</div>
       </q-td>
     </template>
   </q-table>
@@ -27,6 +27,7 @@ export default {
       columns: [
         { name: 'name', label: 'Machine Name', field: 'name', align: 'left', sortable: true },
         { name: 'state', label: 'State', field: 'state', align: 'left', sortable: true },
+        { name: 'condition', label: 'Condition', field: 'condition', align: 'left', sortable: true },
         { name: 'stacklight_color', label: 'Stacklight Color', field: 'stacklight_color', align: 'left', sortable: true },
       ],
       pagination: {
@@ -37,7 +38,7 @@ export default {
 
   methods: {
     getColor (value) {
-      return value ? value.toLowerCase() : 'white'
+      return value && value !== 'OFF' ? value.toLowerCase() : 'grey'
     },
   }
 }

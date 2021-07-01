@@ -1,5 +1,5 @@
 <template>
-  <q-card style="width: 25em">
+  <q-card style="width: 25em" class="cursor-pointer" @click="copyUUID">
     <q-item>
       <q-item-section avatar>
         <q-avatar size="8em">
@@ -19,16 +19,26 @@
 </template>
 
 <script>
+import clipboard from '../mixins/clipboard'
+
 export default {
   props: {
     machine: {type: Object, required: true}
   },
+
+  mixins: [clipboard],
 
   data () {
     return {}
   },
 
   methods: {
+    copyUUID () {
+      this.copyTextToClipboard(this.machine.uuid)
+      this.$q.notify({
+        message: `Machine UUID copied to clipboard!`
+      })
+    }
   }
 }
 </script>
