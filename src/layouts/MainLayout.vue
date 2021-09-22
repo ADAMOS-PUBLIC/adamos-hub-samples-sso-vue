@@ -55,11 +55,12 @@
     </q-header>
 
     <q-page-container class="bg-grey-2">
+      <!-- <router-view /> -->
       <router-view v-if="user" />
       
-      <div v-else class="fixed-center">
+      <!-- <div v-else class="fixed-center">
         <q-spinner size="xl" />
-      </div>
+      </div> -->
     </q-page-container>
   </q-layout>
 </template>
@@ -72,17 +73,28 @@ export default {
   computed: {
     user () {
       return this.$user
+      // return {}
     },
     name () {
-      return this.$user ? this.$user.given_name + ' ' + this.$user.family_name : 'noname'
+      // return this.$user ? this.$user.given_name + ' ' + this.$user.family_name : 'noname'
+      return ''
     },
     email () {
-      return this.$user ? this.$user.email : 'noemail'
+      // return this.$user ? this.$user.email : 'noemail'
+      return ''
     },
     picture () {
-      return this.$user ? this.$user.picture : null
+      // return this.$user ? this.$user.picture : null
+      return null
     },
   },
+
+  mounted () {
+    if (!this.user) {
+      this.$router.replace('/login')
+    }
+  },
+
   data () {
     return {
       leftDrawerOpen: false,

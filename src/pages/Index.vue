@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="row items-end q-mb-md">
-      <span class="text-subtitle1">Welcome back,&nbsp;</span><span class="text-h6">{{ $user.given_name }}! 👷</span>
+      <span class="text-subtitle1">Welcome back,&nbsp;</span><span class="text-h6">{{ user.given_name }}! 👷</span>
     </div>
 
     <div class="text-h6 q-mt-xl">Single-Sign-On (L1 Integration)</div>
@@ -11,7 +11,7 @@
           <template v-for="(field, index) in user_fields">
             <div :key="field.label">
               <div class="text-subtitle2">{{ field.label }}</div>
-              {{ $user[field.field] }}
+              {{ user[field.field] }}
             </div>
             <q-separator v-if="index !== user_fields.length-1" :key="index" vertical />
           </template>
@@ -71,6 +71,9 @@ export default {
   },
 
   computed: {
+    user () {
+      return {}
+    },
     equipments () {
       let clone = [...this.$store.state.mdm.equipments].map(this.mapMachine)
       return clone.sort((a, b) => this.stringSort(a.manufacturerName, b.manufacturerName))

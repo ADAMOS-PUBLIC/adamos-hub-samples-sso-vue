@@ -22,12 +22,13 @@ export default async ({ app, router, Vue }) => {
 
   const mgr = new Oidc.UserManager(config)
   
+  Vue.prototype.$auth = mgr
 
-  // let user = await mgr.getUser()
-  // if (user && !user.expired) {
-  //   await afterLogin(mgr, Vue)
-  //   return
-  // }
+  let user = await mgr.getUser()
+  if (user && !user.expired) {
+    await afterLogin(mgr, Vue)
+    return
+  }
 
   const query = window.location.search;
   if (query.includes("code=") && query.includes("state=")) {
@@ -43,14 +44,16 @@ export default async ({ app, router, Vue }) => {
     return
   }
 
-  mgr.signinRedirect()
+  // mgr.signinRedirect()
+  // console.log(router);
+  // router.push('login')
+  // window.history.replaceState({}, document.title, "/login");
 }
 
 async function afterLogin(mgr, Vue) {
   let user = await mgr.getUser()
 
   Vue.prototype.$user = user.profile
-  Vue.prototype.$auth = mgr
 
   let token = user.access_token
   setAuthHeader(token)
