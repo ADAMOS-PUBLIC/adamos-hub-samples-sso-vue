@@ -36,8 +36,8 @@
                   <q-icon v-else name="account_circle" color="black" size="md" />
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label class="">{{ name }}</q-item-label>
-                  <q-item-label caption>{{ email }}</q-item-label>
+                  <q-item-label class="">{{ user.name }}</q-item-label>
+                  <q-item-label caption>{{ user.email }}</q-item-label>
                 </q-item-section>
               </q-item>
 
@@ -56,7 +56,7 @@
 
     <q-page-container class="bg-grey-2">
       <!-- <router-view /> -->
-      <router-view v-if="user" />
+      <router-view v-if="user.email" />
       
       <!-- <div v-else class="fixed-center">
         <q-spinner size="xl" />
@@ -72,25 +72,18 @@ export default {
 
   computed: {
     user () {
-      return this.$user
-      // return {}
-    },
-    name () {
-      // return this.$user ? this.$user.given_name + ' ' + this.$user.family_name : 'noname'
-      return ''
-    },
-    email () {
-      // return this.$user ? this.$user.email : 'noemail'
-      return ''
+      return this.$user || {}
     },
     picture () {
-      // return this.$user ? this.$user.picture : null
-      return null
+      return this.user.picture
     },
   },
 
   mounted () {
-    if (!this.user) {
+    if (this.$redirecting) {
+      // wait.. redirecting to ADAMOS login page
+    }
+    else if (!this.user.email) {
       this.$router.replace('/login')
     }
   },

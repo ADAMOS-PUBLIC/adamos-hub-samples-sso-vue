@@ -6,10 +6,10 @@
       <div class="text-h4 q-mb-xl text-center">Status View</div>
 
       <q-form @submit="onLogin" class="q-mb-lg">
-        <q-input class="q-mb-sm" v-model="email" label="Email" />
-        <q-input class="q-mb-lg" v-model="password" label="Password" />
+        <q-input disable class="q-mb-sm" v-model="email" label="Email" />
+        <q-input disable class="q-mb-lg" v-model="password" label="Password" />
 
-        <q-btn label="Login" type="submit" color="primary" class="full-width" />
+        <q-btn disable label="Login" type="submit" color="primary" class="full-width" />
       </q-form>
 
       <div class="q-mb-lg row q-gutter-x-md justify-center items-center">
@@ -43,6 +43,11 @@ export default {
       email: null,
       password: null
     }
+  },
+
+  mounted () {
+    console.log('document.referrer');
+    console.log(document.referrer);
   },
 
   methods: {

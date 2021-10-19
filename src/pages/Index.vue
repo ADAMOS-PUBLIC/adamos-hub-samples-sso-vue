@@ -72,7 +72,7 @@ export default {
 
   computed: {
     user () {
-      return {}
+      return this.$user || {}
     },
     equipments () {
       let clone = [...this.$store.state.mdm.equipments].map(this.mapMachine)
@@ -116,9 +116,6 @@ export default {
         {label: 'Your Email', field: 'email'},
         {label: 'App ID', field: 'https://id.adamos.com/applicationId'},
       ],
-      // conditions: ['PRODUCTIVE', 'STANDBY', 'ENGINEERING', 'SCHEDULED DOWNTIME', 'UNSCHEDULED DOWNTIME'],
-      // stacklight_colors: ['GREEN', 'YELLOW', 'WHITE', 'BLUE', 'RED'],
-      // states: ['foo', 'bar', 'test', 'abc', 'def'],
     }
   },
 

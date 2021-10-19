@@ -26,9 +26,17 @@ export default async ({ app, router, Vue }) => {
 
   let user = await mgr.getUser()
   if (user && !user.expired) {
+    // console.log('User exists');
+    // console.log(user);
+
+    // await mgr.signinSilent()
     await afterLogin(mgr, Vue)
+    window.history.replaceState({}, document.title, "/");
     return
   }
+
+  console.log('document.referrer');
+  console.log(document.referrer);
 
   const query = window.location.search;
   if (query.includes("code=") && query.includes("state=")) {
@@ -43,6 +51,10 @@ export default async ({ app, router, Vue }) => {
 
     return
   }
+  else if (query.includes("iss=")) {
+    Vue.prototype.$redirecting = true
+    mgr.signinRedirect()
+  }
 
   // mgr.signinRedirect()
   // console.log(router);
@@ -52,6 +64,7 @@ export default async ({ app, router, Vue }) => {
 
 async function afterLogin(mgr, Vue) {
   let user = await mgr.getUser()
+  console.log(user)
 
   Vue.prototype.$user = user.profile
 
