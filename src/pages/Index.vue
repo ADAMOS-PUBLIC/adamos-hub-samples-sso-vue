@@ -24,7 +24,8 @@
     </div>
 
     <div class="text-h6 q-mt-xl">Machine Master Data (L2 Integration)</div>
-    <div v-if="!equipments.length">
+    <div v-if="mdmLoadingStatus === 'loading'">Loading...</div>
+    <div v-else-if="!equipments.length">
       <div class="">No machines found</div>
     </div>
     <div v-else class="row q-gutter-md">
@@ -56,7 +57,7 @@ export default {
 
   async mounted () {
     this.$store.dispatch('mdm/fetchManufacturers')
-    this.$store.dispatch('catalog/fetchImageItems')
+    // this.$store.dispatch('catalog/fetchImageItems')
 
     let eqs = await this.$store.dispatch('mdm/fetchEquipments')
     if (eqs.error) {
@@ -81,8 +82,11 @@ export default {
     manufacturers () {
       return this.$store.state.mdm.manufacturers
     },
-    imageItems () {
-      return this.$store.state.catalog.imageItems
+    mdmLoadingStatus () {
+      return this.$store.state.mdm.loadingStatus
+    },
+    runstateLoadingStatus () {
+      return this.$store.state.runstate.loadingStatus
     },
     runstates () {
       return this.$store.state.runstate.runstates
@@ -97,10 +101,11 @@ export default {
         let stacklight = this.stacklights.filter(light => light.assetUuid === equip.uuid).pop()
 
         return {
+          id: equip.uuid,
           name: equip.manufacturerIdentification.name,
           state: this.mapState(state),
           condition: this.mapCondition(state),
-          stacklight_color: this.mapStacklight(stacklight)
+          stacklights: this.mapStacklight(stacklight)
         }
       })
     }
@@ -124,11 +129,11 @@ export default {
       if (!equip) return equip
 
       let manufacturerName = this.getManufacturerName(equip.manufacturerId)
-      let imageSrc = this.getImage(equip.manufacturerIdentification.equipmentOemId)
+      // let imageSrc = this.getImage(equip.manufacturerIdentification.equipmentOemId)
       return {
         ...equip,
         manufacturerName,
-        imageSrc
+        // imageSrc
       }
     },
     getManufacturerName (manufacturerId) {
@@ -136,11 +141,11 @@ export default {
       if (!arr.length) return ''
       return arr[0].name
     },
-    getImage (equipmentOemId) {
-      let images = this.imageItems.filter(item => item.equipmentOemId === equipmentOemId)
-      if (!images.length) return 'machines-emptystate.svg'
-      return images[0].fileInformation.url
-    },
+    // getImage (equipmentOemId) {
+    //   let images = this.imageItems.filter(item => item.equipmentOemId === equipmentOemId)
+    //   if (!images.length) return 'machines-emptystate.svg'
+    //   return images[0].fileInformation.url
+    // },
     stringSort (a, b) {
       var nameA = a.toUpperCase(); // ignore upper and lowercase
       var nameB = b.toUpperCase(); // ignore upper and lowercase
@@ -155,10 +160,10 @@ export default {
       return 0;
     },
     mapState (state) {
-      return state ? state.machineState : null
+      return state ? state.state : null
     },
     mapCondition (state) {
-      return state ? state.machineCondition : null
+      return state ? state.condition : null
     },
     mapStacklight (state) {
       return state ? state.stackLightColor : null

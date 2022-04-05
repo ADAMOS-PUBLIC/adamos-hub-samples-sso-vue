@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = 'https://services.adamos-hub.dev/catalog-service/v0.5'
+const BASE_URL = 'https://services.adamos-hub.dev/catalog-service/v1'
 // const BASE_URL = 'https://services.adamos-hub.dev/catalog-service/v0.6/catalogEntries/${oemId}/images'
 
 export async function fetchImageItems (context) {

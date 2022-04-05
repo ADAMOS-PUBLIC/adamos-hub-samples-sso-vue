@@ -4,7 +4,7 @@
       <q-item-section avatar>
         <q-avatar size="8em">
           <!-- <q-img v-if="machine['@type'] === 'Equipment'" :src="machine.imageSrc" style="" /> -->
-          <q-img :src="machine.imageSrc" />
+          <q-img :src="imageSrc" />
         </q-avatar>
         <!-- <q-img :src="machine.imageSrc" width="7em" /> -->
       </q-item-section>
@@ -20,6 +20,7 @@
 
 <script>
 import clipboard from '../mixins/clipboard'
+import axios from 'axios'
 
 export default {
   props: {
@@ -28,8 +29,23 @@ export default {
 
   mixins: [clipboard],
 
+  async mounted () {
+    const catalogEntryId = this.machine.manufacturerIdentification.catalogEntryId
+    let res = await axios.get(`https://services.adamos-hub.dev/catalog-service/v1/catalogEntries/${catalogEntryId}/images`)
+    let images = res.data.content
+    let first = images.length ? images[0] : null
+    if (first) {
+      this.imageSrc = first.fileInformation.url
+    }
+    else {
+      this.imageSrc = 'machines-emptystate.svg'
+    }
+  },
+
   data () {
-    return {}
+    return {
+      imageSrc: null
+    }
   },
 
   methods: {
